@@ -3,7 +3,7 @@
 /* IMPORTANT:
  * change this to the main url of where you host the application, otherwise, every entry will be marked as a cheater
 */
-$hostdomain = 'pacman.platzh1rsch.ch';
+$hostdomain = '192.168.121.68';
 
 if (isset($_POST['action'])) {
 	switch ($_POST['action']) {
@@ -14,8 +14,7 @@ if (isset($_POST['action'])) {
 				echo getHighscore();
 			}
 			break;
-		case 'add':
-			if(isset($_POST['name']) || isset($_POST['score']) || isset($_POST['level'])) 
+		case 'add': if(isset($_POST['name']) || isset($_POST['score']) || isset($_POST['level'])) 
 				echo addHighscore($_POST['name'],$_POST['score'], $_POST['level']);
 			break;
 		case 'reset':
@@ -35,7 +34,7 @@ if (isset($_POST['action'])) {
 
 function getHighscore($page = 1) {
 
-	$db = new SQLite3('pacman.db');
+	$db = new SQLite3('/var/lib/nginx/pacman.db');
 	createDataBase($db);
 	$results = $db->query('SELECT name, score FROM highscore WHERE cheater = 0 AND name != "" ORDER BY score DESC LIMIT 10 OFFSET ' . ($page-1)*10);
 	while ($row = $results->fetchArray()) {
@@ -52,7 +51,7 @@ function getHighscore($page = 1) {
 
 function addHighscore($name, $score, $level) {
 
-	$db = new SQLite3('pacman.db');
+	$db = new SQLite3('/var/lib/nginx/pacman.db');
 	$date = date('Y-m-d h:i:s', time());
 	createDataBase($db);
 	$ref = isset($_SERVER[ 'HTTP_REFERER']) ? $_SERVER[ 'HTTP_REFERER'] : "";
@@ -104,7 +103,7 @@ function addHighscore($name, $score, $level) {
 }
 
 function resetHighscore() {
-	$db = new SQLite3('pacman.db');
+	$db = new SQLite3('/var/lib/nginx/pacman.db');
 	$date = date('Y-m-d h:i:s', time());
 	$db->exec('DROP TABLE IF EXISTS highscore');
 	createDataBase($db);
