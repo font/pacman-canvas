@@ -5,7 +5,8 @@ require '../../vendor/autoload.php';
 /* IMPORTANT:
  * change this to the main url of where you host the application, otherwise, every entry will be marked as a cheater
 */
-$hostdomain = '192.168.121.68';
+$hostdomain = 'pacman.default.federation';
+$connectionURI = 'mongodb://localhost:27017/?replicaSet=rs0';
 
 if (isset($_POST['action'])) {
 	switch ($_POST['action']) {
@@ -36,7 +37,7 @@ if (isset($_POST['action'])) {
 
 function getHighscore($page = 1) {
 
-    $client = new MongoDB\Client("mongodb://localhost:27017");
+    $client = new MongoDB\Client($connectionURI);
     $collection = $client->pacman->highscore;
     $filter = [];
     $options = [
@@ -59,7 +60,7 @@ function getHighscore($page = 1) {
 
 function addHighscore($name, $score, $level) {
 
-    $client = new MongoDB\Client("mongodb://localhost:27017");
+    $client = new MongoDB\Client($connectionURI);
     $collection = $client->pacman->highscore;
 	$date = date('Y-m-d h:i:s', time());
 
@@ -69,7 +70,7 @@ function addHighscore($name, $score, $level) {
 	$remH = isset($_SERVER[ 'REMOTE_HOST']) ? $_SERVER[ 'REMOTE_HOST'] : "";
 
 	// some simple checks to avoid cheaters
-	$ref_assert = preg_match('/http:\/\/.*' . $hostdomain . '/', $ref) > 0;
+	$ref_assert = preg_match('/http:\/\/.*' . $hostdomain . '.*/', $ref) > 0;
 	$ua_assert = ($ua != "");
 	$cheater = 0;
 	if (!$ref_assert || !$ua_assert) {
@@ -103,10 +104,9 @@ function addHighscore($name, $score, $level) {
 }
 
 function resetHighscore() {
-	#$db = new SQLite3('pacman.db');
-	#$date = date('Y-m-d h:i:s', time());
-	#$db->exec('DROP TABLE IF EXISTS highscore');
-	#createDataBase($db);
+    $client = new MongoDB\Client($connectionURI);
+    $collection = $client->pacman->highscore;
+    $result = $collection->drop();
 }
 
 ?>
