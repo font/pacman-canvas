@@ -37,7 +37,12 @@ if (isset($_POST['action'])) {
 
 function getHighscore($page = 1) {
 
-    $client = new MongoDB\Client($connectionURI);
+    $client = new MongoDB\Client('mongodb://localhost:27017/'
+                                 [
+                                     'replicaSet' => 'rs0',
+                                     'readPreference' => 'secondaryPreferred',
+                                 ]
+                                );
     $collection = $client->pacman->highscore;
     $filter = [];
     $options = [
@@ -60,7 +65,7 @@ function getHighscore($page = 1) {
 
 function addHighscore($name, $score, $level) {
 
-    $client = new MongoDB\Client($connectionURI);
+    $client = new MongoDB\Client('mongodb://localhost:27017/?replicaSet=rs0');
     $collection = $client->pacman->highscore;
 	$date = date('Y-m-d h:i:s', time());
 
@@ -104,7 +109,7 @@ function addHighscore($name, $score, $level) {
 }
 
 function resetHighscore() {
-    $client = new MongoDB\Client($connectionURI);
+    $client = new MongoDB\Client('mongodb://localhost:27017/?replicaSet=rs0');
     $collection = $client->pacman->highscore;
     $result = $collection->drop();
 }
