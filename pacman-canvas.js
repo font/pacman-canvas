@@ -112,7 +112,7 @@ function geronimo() {
         var oldConsoleLog = null;
         var pub = {};
 
-        pub.enableLogger =  function enableLogger() 
+        pub.enableLogger =  function enableLogger()
                             {
                                 if(oldConsoleLog === null)
                                     return;
@@ -202,14 +202,14 @@ function geronimo() {
             console.log("ghost frigthened");
             this.ghostFrightened = true;
             this.ghostFrightenedTimer = 240;
-            inky.dazzle();    
-            pinky.dazzle();    
-            blinky.dazzle();    
+            inky.dazzle();
+            pinky.dazzle();
+            blinky.dazzle();
             clyde.dazzle();
         };
 
         this.endGhostFrightened = function() {
-            console.log("ghost frigthened end");        
+            console.log("ghost frigthened end");
             this.ghostFrightened = false;
             inky.undazzle();
             pinky.undazzle();
@@ -261,8 +261,8 @@ function geronimo() {
             this.map.posY[y].posX[x].type = val;
         };
 
-        this.toggleSound = function() { 
-            this.soundfx === 0 ? this.soundfx = 1 : this.soundfx = 0; 
+        this.toggleSound = function() {
+            this.soundfx === 0 ? this.soundfx = 1 : this.soundfx = 0;
             $('#mute').toggle();
             };
 
@@ -381,7 +381,7 @@ function geronimo() {
                 url: mapConfig,
                 async: false,
                  beforeSend: function(xhr){
-                    if (xhr.overrideMimeType) xhr.overrideMimeType("application/json"); 
+                    if (xhr.overrideMimeType) xhr.overrideMimeType("application/json");
                 },
                 dataType: "json",
                 success: function (data) {
@@ -391,7 +391,7 @@ function geronimo() {
 
             var temp = 0;
             $.each(this.map.posY, function(i, item) {
-               $.each(this.posX, function() { 
+               $.each(this.posX, function() {
                    if (this.type == "pill") {
                     temp++;
                     //console.log("Pill Count++. temp="+temp+". PillCount="+this.pillCount+".");
@@ -577,7 +577,7 @@ function geronimo() {
     var up = new Direction("up",1.75,1.25,0,-1);        // UP
     var left = new Direction("left",1.25,0.75,-1,0);    // LEFT
     var down = new Direction("down",0.75,0.25,0,1);        // DOWN
-    var right = new Direction("right",0.25,1.75,1,0);    // 
+    var right = new Direction("right",0.25,1.75,1,0);    //
     /*var directions = [{},{},{},{}];
     directions[0] = up;
     directions[1] = down;
@@ -656,7 +656,7 @@ function geronimo() {
         this.deadImg.src = 'img/dead.svg';
         this.direction = right;
         this.radius = pacman.radius;
-        this.draw = function (context) {                    
+        this.draw = function (context) {
             if (this.dead) {
                 context.drawImage(this.deadImg, this.posX, this.posY, 2*this.radius, 2*this.radius);
             }
@@ -723,7 +723,7 @@ function geronimo() {
                     if ((this.getGridPosX() == 8) || this.getGridPosX() == 9) this.setDirection(up);
                     if ((this.getGridPosX() == 10)) this.setDirection(left);
                 }
-                if ((this.getGridPosY() == 4) && ((this.getGridPosX() == 8) || (this.getGridPosX() == 9)) && this.inGrid()) { 
+                if ((this.getGridPosY() == 4) && ((this.getGridPosX() == 8) || (this.getGridPosX() == 9)) && this.inGrid()) {
                     console.log("ghosthouse -> false");
                     this.ghostHouse = false;
                     }
@@ -743,19 +743,19 @@ function geronimo() {
         }
 
         this.checkCollision = function() {
-          
+
             /* Check Back to Home */
             if (this.dead && (this.getGridPosX() == this.startPosX /30) && (this.getGridPosY() == this.startPosY / 30)) this.reset();
             else {
 
                 /* Check Ghost / Pacman Collision            */
-                if ((between(pacman.getCenterX(), this.getCenterX()-10, this.getCenterX()+10)) 
+                if ((between(pacman.getCenterX(), this.getCenterX()-10, this.getCenterX()+10))
                     && (between(pacman.getCenterY(), this.getCenterY()-10, this.getCenterY()+10)))
                 {
                     if ((!this.dazzled) && (!this.dead)) {
                         pacman.die();
                         }
-                    else {                            
+                    else {
                         this.die();
                     }
                 }
@@ -798,7 +798,7 @@ function geronimo() {
                     var tY = pacman.getGridPosY();
                     break;
 
-                // target: 
+                // target:
                 case "inky":
                     var tX = pacman.getGridPosX() + 2*pacman.direction.dirX;
                     var tY = pacman.getGridPosY() + 2*pacman.direction.dirY;
@@ -821,12 +821,12 @@ function geronimo() {
                     break;
 
                 }
-            }    
+            }
 
 
             var oppDir = this.getOppositeDirection();    // ghosts are not allowed to change direction 180°
 
-            var dirs = [{},{},{},{}];        
+            var dirs = [{},{},{},{}];
             dirs[0].field = game.getMapContent(pX,pY-1);
             dirs[0].dir = up;
             dirs[0].distance = Math.sqrt(Math.pow((pX-tX),2) + Math.pow((pY -1 - tY),2));
@@ -868,7 +868,7 @@ function geronimo() {
                     if ((dirs2[i].field != "wall") && (dirs2[i].field != "door") && !(dirs2[i].dir.equals(this.getOppositeDirection()))) {
                         r = dirs2[i].dir;
                         }
-                }        
+                }
             }
             this.directionWatcher.set(r);
             return r;
@@ -877,20 +877,20 @@ function geronimo() {
              var dir = Math.floor((Math.random()*10)+1)%5;
 
              switch(dir) {
-                case 1:    
+                case 1:
                     if (this.getOppositeDirection().equals(up)) this.setDirection(down);
                     else this.setDirection(up);
                     break;
-                case 2:    
+                case 2:
                     if (this.getOppositeDirection().equals(down)) this.setDirection(up);
                     else this.setDirection(down);
                     break;
-                case 3: 
-                    if (this.getOppositeDirection().equals(right)) this.setDirection(left);                
+                case 3:
+                    if (this.getOppositeDirection().equals(right)) this.setDirection(left);
                     else this.setDirection(right);
                     break;
-                case 4:        
-                    if (this.getOppositeDirection().equals(left)) this.setDirection(right);                
+                case 4:
+                    if (this.getOppositeDirection().equals(left)) this.setDirection(right);
                     else this.setDirection(left);
                     break;
              }
@@ -958,7 +958,7 @@ function geronimo() {
         this.getGridPosY = function() {
             return (this.posY - (this.posY % 30))/30;
         }
-        this.setDirection = function(dir) {            
+        this.setDirection = function(dir) {
             this.dirX = dir.dirX;
             this.dirY = dir.dirY;
             this.angle1 = dir.angle1;
@@ -1119,8 +1119,8 @@ function geronimo() {
             blinky.dazzle();
             clyde.dazzle();
         };
-        this.disableBeastMode = function() { 
-            this.beastMode = false; 
+        this.disableBeastMode = function() {
+            this.beastMode = false;
             //console.log("Beast Mode is over!");
             inky.undazzle();
             pinky.undazzle();
@@ -1226,10 +1226,10 @@ function geronimo() {
     game.buildWalls();
 
 
-// Check if a new cache is available on page load.     
+// Check if a new cache is available on page load.
 function checkAppCache() {
     console.log('check AppCache');
-    window.applicationCache.addEventListener('updateready', function(e) 
+    window.applicationCache.addEventListener('updateready', function(e)
     {
         console.log("AppCache: updateready");
         if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
@@ -1246,11 +1246,11 @@ function checkAppCache() {
         }
     }, false);
 
-    window.applicationCache.addEventListener('cached', function(e) 
+    window.applicationCache.addEventListener('cached', function(e)
     {
         console.log("AppCache: cached");
     }, false);
-    
+
 }
 
 
@@ -1262,7 +1262,7 @@ function checkAppCache() {
         $("body").scrollTop(1);
     }
 
-    $(document).ready(function() {    
+    $(document).ready(function() {
 
         $.ajaxSetup({ mimeType: "application/json" });
 
@@ -1376,14 +1376,14 @@ function checkAppCache() {
             game.newGame();
         });
         $(document).on('click','.button#highscore',function(event) {
-            game.showContent('highscore-content'); 
+            game.showContent('highscore-content');
             getHighscore();
         });
         $(document).on('click','.button#instructions',function(event) {
             game.showContent('instructions-content');
         });
         $(document).on('click','.button#info',function(event) {
-            game.showContent('info-content'); 
+            game.showContent('info-content');
         });
         // back button
         $(document).on('click','.button#back',function(event) {
@@ -1397,7 +1397,7 @@ function checkAppCache() {
         $(document).on('click', '#updateCode', function(event) {
             console.log('check for new version');
             event.preventDefault();
-            window.applicationCache.update(); 
+            window.applicationCache.update();
         });
 
         // checkAppCache();
