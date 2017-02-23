@@ -40,10 +40,10 @@ function geronimo() {
              },
            success: function(msg){
              $("#highscore-table tbody").text("");
-             //$("#highscore-table").after("<tr><th id=\"rank\">Rank</th><th id=\"playername\">Name</th><th id=\"zone\">Zone</th><th id=\"score\">Score</th></tr>");
              for (var i = 0; i < msg.length; i++) {
-                $("#highscore-table tbody").append("<tr><td id='rank'>" + i + "</td><td id='playername'>" + msg[i]['name'] + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='score'>" + msg[i]['score'] + "</td></tr>");
-                //$("#highscore-table").append("<li>"+msg[i]['name']+"&nbsp&nbsp&nbsp<span id='zone'>"+msg[i]['zone']+"</span><span id='score'>"+msg[i]['score']+"</span></li>");
+                var rank = i + 1;
+                // Can we make this shorter?
+                $("#highscore-table tbody").append("<tr><td id='rank'>" + rank + "</td><td id='playername'>" + msg[i]['name'] + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='score'>" + msg[i]['score'] + "</td></tr>");
              }
            }
         });
