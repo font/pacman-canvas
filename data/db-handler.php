@@ -129,7 +129,7 @@ function getFederatedZone() {
     if (empty($output)) {
         $output = 'unknown';
     }
-    $split_output = explode('/', $output);
+    $split_output = explode('/', $output[0]);
 
     # return the last field
     $zone = $split_output[count($split_output) - 1];
