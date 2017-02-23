@@ -39,9 +39,11 @@ function geronimo() {
              action: "get"
              },
            success: function(msg){
-             $("#highscore-list").text("");
+             $("#highscore-table tbody").text("");
+             //$("#highscore-table").after("<tr><th id=\"rank\">Rank</th><th id=\"playername\">Name</th><th id=\"zone\">Zone</th><th id=\"score\">Score</th></tr>");
              for (var i = 0; i < msg.length; i++) {
-                $("#highscore-list").append("<li>"+msg[i]['name']+"<span id='score'>"+msg[i]['score']+"</span></li>");
+                $("#highscore-table tbody").append("<tr><td id='rank'>" + i + "</td><td id='playername'>" + msg[i]['name'] + "</td><td id='zone'>" + msg[i]['zone'] + "</td><td id='score'>" + msg[i]['score'] + "</td></tr>");
+                //$("#highscore-table").append("<li>"+msg[i]['name']+"&nbsp&nbsp&nbsp<span id='zone'>"+msg[i]['zone']+"</span><span id='score'>"+msg[i]['score']+"</span></li>");
              }
            }
         });
@@ -68,10 +70,29 @@ function geronimo() {
         });
     }
 
+    function ajax_get_zone() {
+        $.ajax({
+           datatype: "json",
+           type: "GET",
+           url: "data/db-handler.php",
+           data: {
+             action: "zone"
+             },
+           success: function(msg){
+             $(".zone").append("<b>" + msg + "</b>");
+             game.zone = msg;
+           }
+        });
+    }
+
     function addHighscore() {
-            var name = $("input[type=text]").val();
-            $("#highscore-form").html("Saving highscore...");
-            ajax_add(name ,game.score.score, game.level);
+        var name = $("input[type=text]").val();
+        $("#highscore-form").html("Saving highscore...");
+        ajax_add(name ,game.score.score, game.level);
+    }
+
+    function getZone() {
+        setTimeout(ajax_get_zone,30);
     }
 
     function buildWall(context,gridX,gridY,width,height) {
@@ -138,6 +159,7 @@ function geronimo() {
         this.refreshRate = 33;        // speed of the game, will increase in higher levels
         this.running = false;
         this.pause = true;
+        this.zone = '';
         this.score = new Score();
         this.soundfx = 0;
         this.map;
@@ -1255,6 +1277,9 @@ function checkAppCache() {
         // Hide address bar
         hideAdressbar();
 
+        // Shoe zone
+        getZone();
+
         if (window.applicationCache != null) checkAppCache();
 
         /* -------------------- EVENT LISTENERS -------------------------- */
@@ -1379,9 +1404,9 @@ function checkAppCache() {
 
         canvas = $("#myCanvas").get(0);
         context = canvas.getContext("2d");
-        
-            
- 
+
+
+
         /* --------------- GAME INITIALISATION ------------------------------------
 
             TODO: put this into Game object and change code to accept different setups / levels
@@ -1409,7 +1434,7 @@ function checkAppCache() {
             var dotPosY;
             $.each(game.map.posY, function(i, item) {
                 dotPosY = this.row;
-               $.each(this.posX, function() { 
+               $.each(this.posX, function() {
                    if (this.type == "pill") {
                     context.arc(game.toPixelPos(this.col-1)+pacman.radius,game.toPixelPos(dotPosY-1)+pacman.radius,game.pillSize,0*Math.PI,2*Math.PI);
                     context.moveTo(game.toPixelPos(this.col-1), game.toPixelPos(dotPosY-1));
@@ -1418,7 +1443,7 @@ function checkAppCache() {
                     context.arc(game.toPixelPos(this.col-1)+pacman.radius,game.toPixelPos(dotPosY-1)+pacman.radius,game.powerpillSizeCurrent,0*Math.PI,2*Math.PI);
                     context.moveTo(game.toPixelPos(this.col-1), game.toPixelPos(dotPosY-1));
                    }
-               }); 
+               });
             });
             console.log("pps: " + game.nextPowerPillSize());
             context.fill();
@@ -1523,7 +1548,7 @@ function checkAppCache() {
                 break;
             case 40:    // DOWN Arrow Key pressed
                 evt.preventDefault();
-            case 83:    // S pressed 
+            case 83:    // S pressed
                 pacman.directionWatcher.set(down);
                 break;
             case 37:    // LEFT Arrow Key pressed
@@ -1554,7 +1579,7 @@ function checkAppCache() {
                 break;
             case 32:    // SPACE pressed -> pause Game
                 evt.preventDefault();
-                if (!(game.gameOver == true) 
+                if (!(game.gameOver == true)
                     && $('#game-content').is(':visible')
                     )    game.pauseResume();
                 break;

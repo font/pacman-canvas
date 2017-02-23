@@ -6,7 +6,6 @@ require '../../vendor/autoload.php';
  * change this to the main url of where you host the application, otherwise, every entry will be marked as a cheater
 */
 $hostdomain = 'pacman.default.federation';
-$connectionURI = 'mongodb://localhost:27017/?replicaSet=rs0';
 
 if (isset($_POST['action'])) {
 	switch ($_POST['action']) {
@@ -31,13 +30,15 @@ if (isset($_POST['action'])) {
 		} else {
 			echo getHighscore();
 		}
-	}
+    } elseif ($_GET['action'] == 'zone') {
+        echo getZone();
+    }
 } else echo "define action to call";
 
 
 function getHighscore($page = 1) {
 
-    $client = new MongoDB\Client('mongodb://localhost:27017/'
+    $client = new MongoDB\Client('mongodb://localhost:27017/',
                                  [
                                      'replicaSet' => 'rs0',
                                      'readPreference' => 'secondaryPreferred',
@@ -50,10 +51,16 @@ function getHighscore($page = 1) {
                ];
     $result = $collection->find($filter, $options);
 
+    $i = 0;
     foreach ($result as $doc) {
 		$tmp["name"] = htmlspecialchars($doc['name']);
+        $tmp["zone"] = $doc['zone'];
 		$tmp["score"] = strval($doc['score']);
 		$response[] = $tmp;
+
+        if ($i++ >= 9) {
+            break;
+        }
     }
 
 	if (!isset($response) || is_null($response)) {
@@ -92,17 +99,19 @@ function addHighscore($name, $score, $level) {
 		$cheater = 1;
 	}
 
-	$name_clean = htmlspecialchars($name);
-	$score_clean = htmlspecialchars($score);
+    $zone = getFederatedZone();
 
-    $result = $collection->insertOne( [ 'name' => $name, 'score' => (int) $score, 'level' => $level,
-                                        'date' => $date, 'log_referer' => $ref, 'log_user_agent' => $ua,
+    $result = $collection->insertOne( [ 'name' => $name, 'zone' => $zone,
+                                        'score' => (int) $score, 'level' => $level,
+                                        'date' => $date, 'log_referer' => $ref,
+                                        'log_user_agent' => $ua,
                                         'log_remote_addr' => $remA, 'log_remote_host' => $remH,
                                         'cheater' => $cheater ] );
 
 	$response['status'] = "success";
 	$response['level'] = $level;
 	$response['name'] = $name;
+	$response['zone'] = $zone;
 	$response['score'] = $score;
 	$response['cheater'] = $cheater;
 	return json_encode($response);
@@ -112,6 +121,23 @@ function resetHighscore() {
     $client = new MongoDB\Client('mongodb://localhost:27017/?replicaSet=rs0');
     $collection = $client->pacman->highscore;
     $result = $collection->drop();
+}
+
+function getFederatedZone() {
+    exec("curl \"http://metadata.google.internal/computeMetadata/v1/instance/zone\" -H \"Metadata-Flavor: Google\"", $output, $return_var);
+
+    if (empty($output)) {
+        $output = 'unknown';
+    }
+    $split_output = explode('/', $output);
+
+    # return the last field
+    $zone = $split_output[count($split_output) - 1];
+    return $zone;
+}
+
+function getZone() {
+    return json_encode(strtoupper(getFederatedZone()));
 }
 
 ?>

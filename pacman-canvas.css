@@ -61,8 +61,27 @@ body {
 input[type="text"]:hover, input[type="text"]:focus, input[type="password"]:hover, input[type="password"]:focus, textarea:hover, textarea:focus {
     border: 1px #c80a0a solid;
 }
-#highscore-list {}
-#score { float: right; }
+
+table, th {
+    background-color: inherit;
+    border: 1px solid white;
+    color: inherit;
+}
+
+th {
+    height: 40px;
+    text-align: center;
+}
+
+tr:hover {
+    background-color: rgba(0,0,0,0.4);
+}
+
+#highscore-table { width: 100%; }
+#rank {}
+#playername {}
+#zone {}
+#score {}
 
 #myCanvas { border: none; display: block; background: rgb(0,0,0); width: 100%;  height: auto;}
 #canvas-container { position: relative;}
@@ -103,6 +122,7 @@ body, html { font-size: 15px; }
 div.audio {}
 audio {display: block; }
 
+.zone {}
 .score { width: 180px; }
 .score, .lives, .level { display: inline-block; }
 
