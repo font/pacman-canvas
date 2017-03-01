@@ -48,7 +48,7 @@ function geronimo() {
            }
         });
     }
-    function ajax_add(n, s, l) {
+    function ajax_add(n, z, s, l) {
 
         $.ajax({
            type: 'POST',
@@ -56,6 +56,7 @@ function geronimo() {
            data: {
              action: 'add',
              name: n,
+             zone: z,
              score: s,
              level: l
              },
@@ -88,7 +89,7 @@ function geronimo() {
     function addHighscore() {
         var name = $("input[type=text]").val();
         $("#highscore-form").html("Saving highscore...");
-        ajax_add(name ,game.score.score, game.level);
+        ajax_add(name, game.zone, game.score.score, game.level);
     }
 
     function getZone() {

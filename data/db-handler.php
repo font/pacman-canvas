@@ -16,8 +16,12 @@ if (isset($_POST['action'])) {
                 echo getHighscore();
             }
             break;
-        case 'add': if(isset($_POST['name']) || isset($_POST['score']) || isset($_POST['level']))
-                echo addHighscore($_POST['name'],$_POST['score'], $_POST['level']);
+        case 'add':
+            if(isset($_POST['name']) || isset($_POST['zone'])
+              || isset($_POST['score']) || isset($_POST['level'])) {
+                echo addHighscore($_POST['name'], $_POST['zone'],
+                                  $_POST['score'],$_POST['level']);
+            }
             break;
         case 'reset':
             echo resetHighscore();
@@ -70,7 +74,7 @@ function getHighscore($page = 1) {
     }
 }
 
-function addHighscore($name, $score, $level) {
+function addHighscore($name, $zone, $score, $level) {
 
     $client = new MongoDB\Client('mongodb://localhost:27017/?replicaSet=rs0');
     $collection = $client->pacman->highscore;
@@ -98,8 +102,6 @@ function addHighscore($name, $score, $level) {
     } else if (($score / $level) > (1600 + 1240)) {
         $cheater = 1;
     }
-
-    $zone = getFederatedZone();
 
     $result = $collection->insertOne( [ 'name' => $name, 'zone' => $zone,
                                         'score' => (int) $score, 'level' => $level,
