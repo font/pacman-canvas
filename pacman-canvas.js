@@ -1278,7 +1278,7 @@ function checkAppCache() {
         // Hide address bar
         hideAdressbar();
 
-        // Shoe zone
+        // Show zone
         getZone();
 
         if (window.applicationCache != null) checkAppCache();
